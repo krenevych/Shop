@@ -1,16 +1,15 @@
 package com.example.shop.data
 
-import android.content.ClipData.Item
 import com.example.shop.domain.ShopItem
 import com.example.shop.domain.ShopItemRepository
 
-class ShopItemRepositoryImpl : ShopItemRepository {
+object ShopItemRepositoryImpl : ShopItemRepository {
 
     private val shopItems = mutableListOf<ShopItem>()
     private var currentId = 0L
 
     init {
-        for (i in 1..100) {
+        for (i in 1..5) {
             addShopItem(
                 ShopItem(
                     "Item_$i",
