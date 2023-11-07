@@ -17,14 +17,12 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.liveData.observe(this) {
-            Log.d(TAG, "onCreate: $it" )
+            Log.d(TAG, "ShopList: $it")
         }
 
         button = findViewById(R.id.button)
-        button.setOnClickListener{
-//            val shopItemList =
-                viewModel.getShopItemList()
-//            Log.d(TAG, "onCreate: $shopItemList" )
+        button.setOnClickListener {
+            viewModel.getShopItemList()
         }
 
     }

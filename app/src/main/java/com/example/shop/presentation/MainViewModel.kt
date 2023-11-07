@@ -22,8 +22,6 @@ class MainViewModel: ViewModel() {
     fun getShopItemList() {
         val shopItems = getShopItemListUseCase.getItems()
         liveData.value = shopItems
-//        val shopItems = getShopItemListUseCase.getItems()
-//        return shopItems
     }
 
 }
