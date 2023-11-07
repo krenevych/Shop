@@ -1,6 +1,6 @@
 package com.example.shop.domain
 
-interface Repository {
+interface ShopItemRepository {
     fun addShopItem(item: ShopItem)
     fun editShopItem(item: ShopItem)
     fun getItem(id: Long) : ShopItem
