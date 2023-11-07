@@ -20,8 +20,17 @@ class MainViewModel: ViewModel() {
     val liveData = MutableLiveData<List<ShopItem> >()
 
     fun getShopItemList() {
-        val shopItems = getShopItemListUseCase.getItems()
+        val shopItems: List<ShopItem> = getShopItemListUseCase.getItems()
         liveData.value = shopItems
+    }
+
+    fun editShopItem(item: ShopItem) {
+        editShopItemUseCase.editShopItem(item)
+        getShopItemList()
+    }
+    fun removeShopItem(item: ShopItem) {
+        removeShopItemUseCase.removeShopItem(item)
+        getShopItemList()
     }
 
 }
