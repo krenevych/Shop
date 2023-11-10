@@ -4,5 +4,10 @@ data class ShopItem(
     val name: String,
     val count: Int,
     val active: Boolean,
-    var id: Long,
+    var id: Long = UNDEFINED,
 )
+{
+    companion object {
+        const val UNDEFINED = -1L
+    }
+}
