@@ -14,10 +14,12 @@ object ShopItemRepositoryImpl : ShopItemRepository {
         o1.id.compareTo(o2.id)
     })
 
-    private var currentId = 0L
+//    private val shopItems = mutableListOf<ShopItem>()
+
+        private var currentId = 0L
 
     init {
-        for (i in 1..25) {
+        for (i in 1..5) {
             addShopItem(
                 ShopItem(
                     "Item_$i",

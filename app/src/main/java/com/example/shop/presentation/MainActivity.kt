@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         buttonRemove = findViewById(R.id.buttonRemove)
         buttonRemove.setOnClickListener {
             item?.let {
-                viewModel.removeShopItem(it)
+                viewModel.toggleItemActivity(it)
             }
 
         }

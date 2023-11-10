@@ -26,7 +26,8 @@ class MainViewModel: ViewModel() {
     }
 
     fun toggleItemActivity(item: ShopItem) {
-        editShopItemUseCase.editShopItem(item)
+        val newItem = item.copy(active = !item.active)
+        editShopItemUseCase.editShopItem(newItem)
     }
     fun removeShopItem(item: ShopItem) {
         removeShopItemUseCase.removeShopItem(item)
