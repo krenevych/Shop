@@ -10,8 +10,6 @@ import com.example.shop.domain.ShopItem
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var button: Button
-    private lateinit var buttonRemove: Button
     private lateinit var viewModel: MainViewModel
 
     var item: ShopItem?= null
@@ -26,17 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        button = findViewById(R.id.button)
-        button.setOnClickListener {
-            viewModel.getShopItemList()
-        }
-        buttonRemove = findViewById(R.id.buttonRemove)
-        buttonRemove.setOnClickListener {
-            item?.let {
-                viewModel.toggleItemActivity(it)
-            }
 
-        }
 
     }
 
