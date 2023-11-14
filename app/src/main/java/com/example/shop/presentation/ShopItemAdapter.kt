@@ -25,12 +25,30 @@ class ShopItemAdapter: RecyclerView.Adapter<ShopItemAdapter.ShopItemViewHolder>(
             val cardView: CardView = view.findViewById(R.id.cardView_shopItem)
         }
 
+    companion object {
+        const val ITEM_ACTIVE = 0
+        const val ITEM_DISABLED = 1
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
+        val itemLayout = when (viewType){
+            ITEM_ACTIVE -> R.layout.shop_item
+            ITEM_DISABLED -> R.layout.shop_item_disabled
+            else -> throw IllegalArgumentException("Unknown type")
+        }
+
         val view: View = LayoutInflater
             .from(parent.context)
-            .inflate(R.layout.shop_item, parent, false)
+            .inflate(itemLayout, parent, false)
 
         return ShopItemViewHolder(view)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (shopItems[position].active) {
+            ITEM_ACTIVE
+        } else {
+            ITEM_DISABLED
+        }
     }
 
     override fun getItemCount() = shopItems.size
@@ -42,11 +60,6 @@ class ShopItemAdapter: RecyclerView.Adapter<ShopItemAdapter.ShopItemViewHolder>(
         with(holder){
             name.text = "${shopItem.name} : ${shopItem.active}"
             count.text = shopItem.count.toString()
-            if (shopItem.active){
-                cardView.setBackgroundColor(Color.CYAN)
-            } else{
-                cardView.setBackgroundColor(Color.GRAY)
-            }
 
             cardView.setOnClickListener {
                 clickListener?.invoke(cardView, shopItem)
