@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModelProvider
 import com.example.shop.R
 import com.example.shop.domain.ShopItem
 import com.google.android.material.textfield.TextInputEditText
@@ -18,6 +20,8 @@ class ShopItemActivity : AppCompatActivity() {
     private lateinit var editCount: TextInputEditText
 
     private lateinit var button: Button
+
+    private lateinit var viewModel: ShopItemViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +39,24 @@ class ShopItemActivity : AppCompatActivity() {
 //            tilCount.error = null
         }
 
+        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+        viewModel.itemLiveData.observe(this){
+            editName.setText(it.name)
+            editCount.setText(it.count.toString())
+        }
+
+//        viewModel.itemLiveData.value = ShopItem("hello", 332)
+//        (viewModel.itemLiveData as MutableLiveData<ShopItem>).value =  ShopItem("hello", 332)
+
         parseIntent()
 
+    }
+
+    private fun lunchActivityForAdd(){
+
+    }
+    private fun lunchActivityForEdit(){
+        viewModel.getItem(itemId)
     }
 
     private var mode: String = MODE_UNDEF
@@ -48,6 +68,9 @@ class ShopItemActivity : AppCompatActivity() {
             if (mode == MODE_EDIT && intent.hasExtra(EXTRA_ITEM_ID)){
                 itemId = intent.getLongExtra(EXTRA_ITEM_ID, ShopItem.UNDEFINED)
                 Log.d(TAG, "parseIntent: itemId = $itemId")
+                lunchActivityForEdit()
+            } else {
+                lunchActivityForAdd()
             }
         }
     }
