@@ -1,15 +1,15 @@
 package com.example.shop.presentation
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shop.R
 import com.example.shop.domain.ShopItem
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,6 +37,12 @@ class MainActivity : AppCompatActivity() {
         viewModel.liveData.observe(this) {
             adapter.shopItems = it
         }
+
+        adapter.swipeListener = {
+            viewModel.removeShopItem(it)
+        }
+        val itemTouchHelper = ItemTouchHelper(adapter.simpleItemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
 
 
 
