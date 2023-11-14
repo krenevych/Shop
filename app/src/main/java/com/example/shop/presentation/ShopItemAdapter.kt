@@ -1,10 +1,12 @@
 package com.example.shop.presentation
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shop.R
@@ -15,8 +17,12 @@ class ShopItemAdapter: RecyclerView.Adapter<ShopItemAdapter.ShopItemViewHolder>(
 
     var shopItems = listOf<ShopItem>()
         set(value) {
+            val diffUtilCallback = ShopItemsDiffUtilCallback(shopItems, value)
+            val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(diffUtilCallback)
             field = value
-            notifyDataSetChanged()  // FIXME:
+
+            diffResult.dispatchUpdatesTo(this)
+//            notifyDataSetChanged()  // FIXME:
         }
 
     class ShopItemViewHolder(view: View):
@@ -29,6 +35,7 @@ class ShopItemAdapter: RecyclerView.Adapter<ShopItemAdapter.ShopItemViewHolder>(
     companion object {
         const val ITEM_ACTIVE = 0
         const val ITEM_DISABLED = 1
+        const val TAG = "XXXXX"
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
         val itemLayout = when (viewType){
@@ -58,6 +65,7 @@ class ShopItemAdapter: RecyclerView.Adapter<ShopItemAdapter.ShopItemViewHolder>(
     var longClickListener: ((view: View, item: ShopItem)->Unit  )? = null
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
         val shopItem = shopItems[position]
+        Log.e(TAG, "onBindViewHolder: ${shopItem.id}", )
         with(holder){
             name.text = "${shopItem.name} : ${shopItem.active}"
             count.text = shopItem.count.toString()
