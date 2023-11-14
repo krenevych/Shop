@@ -2,8 +2,10 @@ package com.example.shop.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import com.example.shop.R
+import com.example.shop.domain.ShopItem
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -33,5 +35,25 @@ class ShopItemActivity : AppCompatActivity() {
 //            tilCount.error = null
         }
 
+        parseIntent()
+
+    }
+
+    private var mode: String = MODE_UNDEF
+    private var itemId: Long = ShopItem.UNDEFINED
+    private fun parseIntent(){
+        if (intent.hasExtra(EXTRA_MODE)){
+            mode = intent.getStringExtra(EXTRA_MODE) ?: MODE_UNDEF
+            Log.d(TAG, "parseIntent: mode = $mode")
+            if (mode == MODE_EDIT && intent.hasExtra(EXTRA_ITEM_ID)){
+                itemId = intent.getLongExtra(EXTRA_ITEM_ID, ShopItem.UNDEFINED)
+                Log.d(TAG, "parseIntent: itemId = $itemId")
+            }
+        }
+    }
+
+    companion object {
+
+        val TAG = "XXXXXX"
     }
 }

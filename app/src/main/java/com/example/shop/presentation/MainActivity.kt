@@ -57,15 +57,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun lunchActivityForAdd(){
         val intent = Intent(this, ShopItemActivity::class.java)
+        intent.putExtra(EXTRA_MODE, MODE_ADD)
         startActivity(intent)
     }
 
     private fun lunchActivityForEdit(itemId: Long){
         val intent = Intent(this, ShopItemActivity::class.java)
+        intent.putExtra(EXTRA_MODE, MODE_EDIT)
+        intent.putExtra(EXTRA_ITEM_ID, itemId)
         startActivity(intent)
     }
 
     companion object {
+
         val TAG = "XXXXXX"
     }
 }
