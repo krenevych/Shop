@@ -6,24 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shop.R
 import com.example.shop.domain.ShopItem
 
-
-class ShopItemAdapter: RecyclerView.Adapter<ShopItemAdapter.ShopItemViewHolder>() {
-
-    var shopItems = listOf<ShopItem>()
-        set(value) {
-            val diffUtilCallback = ShopItemsDiffUtilCallback(shopItems, value)
-            val diffResult: DiffUtil.DiffResult = DiffUtil.calculateDiff(diffUtilCallback)
-            field = value
-
-            diffResult.dispatchUpdatesTo(this)
-//            notifyDataSetChanged()  // FIXME:
-        }
+class ShopItemAdapter
+    : ListAdapter<ShopItem, ShopItemAdapter.ShopItemViewHolder>(ShopItemsDiffUtilCallbackAsync()) {
 
     class ShopItemViewHolder(view: View):
         RecyclerView.ViewHolder(view) {
@@ -52,19 +42,17 @@ class ShopItemAdapter: RecyclerView.Adapter<ShopItemAdapter.ShopItemViewHolder>(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (shopItems[position].active) {
+        return if (getItem(position).active) {
             ITEM_ACTIVE
         } else {
             ITEM_DISABLED
         }
     }
 
-    override fun getItemCount() = shopItems.size
-
     var clickListener: ((view: View, item: ShopItem)->Unit  )? = null
     var longClickListener: ((view: View, item: ShopItem)->Unit  )? = null
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        val shopItem = shopItems[position]
+        val shopItem = getItem(position)
         Log.e(TAG, "onBindViewHolder: ${shopItem.id}", )
         with(holder){
             name.text = "${shopItem.name} : ${shopItem.active}"
@@ -97,7 +85,7 @@ class ShopItemAdapter: RecyclerView.Adapter<ShopItemAdapter.ShopItemViewHolder>(
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
             val position = viewHolder.adapterPosition
-            val shopItem = shopItems[position]
+            val shopItem = getItem(position)
             swipeListener?.invoke(shopItem)
         }
     }

@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         viewModel.liveData.observe(this) {
-            adapter.shopItems = it
+            adapter.submitList(it)
         }
 
         adapter.swipeListener = {
