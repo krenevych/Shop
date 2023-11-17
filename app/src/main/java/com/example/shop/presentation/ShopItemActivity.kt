@@ -2,9 +2,9 @@ package com.example.shop.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import android.widget.Button
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.example.shop.R
 import com.example.shop.domain.ShopItem
@@ -19,7 +19,7 @@ class ShopItemActivity : AppCompatActivity() {
     private lateinit var editName: TextInputEditText
     private lateinit var editCount: TextInputEditText
 
-    private lateinit var button: Button
+    private lateinit var buttonSave: Button
 
     private lateinit var viewModel: ShopItemViewModel
 
@@ -34,10 +34,8 @@ class ShopItemActivity : AppCompatActivity() {
         editName = findViewById(R.id.edit_text_name)
         editCount = findViewById(R.id.edit_text_count)
 
-        button = findViewById(R.id.buttonSave)
-        button.setOnClickListener {
-//            tilCount.error = null
-        }
+        buttonSave = findViewById(R.id.buttonSave)
+
 
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         viewModel.itemLiveData.observe(this){
@@ -53,10 +51,16 @@ class ShopItemActivity : AppCompatActivity() {
     }
 
     private fun lunchActivityForAdd(){
-
+        buttonSave.setOnClickListener {
+            viewModel.addItem(editName.text, editCount.text)
+        }
     }
     private fun lunchActivityForEdit(){
         viewModel.getItem(itemId)
+
+        buttonSave.setOnClickListener {
+            viewModel.editItem(editName.text, editCount.text)
+        }
     }
 
     private var mode: String = MODE_UNDEF
@@ -65,13 +69,18 @@ class ShopItemActivity : AppCompatActivity() {
         if (intent.hasExtra(EXTRA_MODE)){
             mode = intent.getStringExtra(EXTRA_MODE) ?: MODE_UNDEF
             Log.d(TAG, "parseIntent: mode = $mode")
-            if (mode == MODE_EDIT && intent.hasExtra(EXTRA_ITEM_ID)){
+            if (mode == MODE_ADD){
+                lunchActivityForAdd()
+            }
+            else if (mode == MODE_EDIT && intent.hasExtra(EXTRA_ITEM_ID)){
                 itemId = intent.getLongExtra(EXTRA_ITEM_ID, ShopItem.UNDEFINED)
                 Log.d(TAG, "parseIntent: itemId = $itemId")
                 lunchActivityForEdit()
             } else {
-                lunchActivityForAdd()
+                throw IllegalArgumentException("Item Id is not defined")
             }
+        } else {
+            throw IllegalArgumentException("Mode is not defined")
         }
     }
 

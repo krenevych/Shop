@@ -1,5 +1,6 @@
 package com.example.shop.presentation
 
+import android.text.Editable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,7 +18,7 @@ class ShopItemViewModel: ViewModel() {
     private val addShopItemUseCase = AddShopItem(repository)
     private val getShopItemUseCase = GetShopItem(repository)
 
-    private var _itemLiveData = MutableLiveData<ShopItem>()
+    private val _itemLiveData = MutableLiveData<ShopItem>()
     val itemLiveData: LiveData<ShopItem>
         get() = _itemLiveData
 
@@ -26,16 +27,45 @@ class ShopItemViewModel: ViewModel() {
         _itemLiveData.value = shopItem
     }
 
-    fun editItem(name: String, count: Int){
-        val item = _itemLiveData.value
-        item?.let {
-            val shopItem = it.copy(name = name, count = count)
-            editShopItemUseCase.editShopItem(shopItem)
+    private fun validate(name: String, count: Int): Boolean {
+        var res = true
+        if (name == ""){
+            res = false
         }
+        if (count <= 0){
+            res = false
+        }
+
+        return res
     }
-    fun addItem(name: String, count: Int){
-        val shopItem = ShopItem(name, count)
-        addShopItemUseCase.addShopItem(shopItem)
+
+    private fun parseInputName(inputName: Editable?) = inputName?.toString() ?: ""
+
+    private fun parseInputCount(inputCount: Editable?): Int {
+        return inputCount?.toString()?.toInt() ?: 0
+    }
+
+    fun editItem(inputName: Editable?, inputCount: Editable?){
+        val item = _itemLiveData.value
+
+        val name = parseInputName(inputName)
+        val count = parseInputCount(inputCount)
+        if (validate(name, count)){
+            item?.let {
+                val shopItem = it.copy(name = name, count = count)
+                editShopItemUseCase.editShopItem(shopItem)
+            }
+        }
+
+    }
+    fun addItem(inputName: Editable?, inputCount: Editable?){
+        val name = parseInputName(inputName)
+        val count = parseInputCount(inputCount)
+
+        if (validate(name, count)) {
+            val shopItem = ShopItem(name, count)
+            addShopItemUseCase.addShopItem(shopItem)
+        }
     }
 
 }

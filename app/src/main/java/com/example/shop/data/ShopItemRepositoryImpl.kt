@@ -19,7 +19,7 @@ object ShopItemRepositoryImpl : ShopItemRepository {
         private var currentId = 0L
 
     init {
-        for (i in 1..25) {
+        for (i in 1..11) {
             addShopItem(
                 ShopItem(
                     "Item_$i",
