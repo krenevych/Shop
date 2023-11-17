@@ -3,4 +3,6 @@
     <string name="item_count">Count</string>
     <string name="item_name">Name</string>
     <string name="save_item">Save Item</string>
+    <string name="name_error">Name error</string>
+    <string name="count_error">Count error</string>
 </resources>

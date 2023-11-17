@@ -2,9 +2,9 @@ package com.example.shop.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
 import android.widget.Button
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.example.shop.R
 import com.example.shop.domain.ShopItem
@@ -27,27 +27,40 @@ class ShopItemActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
 
+        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+
+        initViews()
+        parseIntent()
+        registerLiveData()
+
+    }
+
+    private fun initViews() {
         tilName = findViewById(R.id.til_name)
         tilCount = findViewById(R.id.til_count)
-//        tilCount.error = "Error"
 
         editName = findViewById(R.id.edit_text_name)
-        editCount = findViewById(R.id.edit_text_count)
-
-        buttonSave = findViewById(R.id.buttonSave)
-
-
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        viewModel.itemLiveData.observe(this){
-            editName.setText(it.name)
-            editCount.setText(it.count.toString())
+//        editName.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//            }
+//
+//            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+//                tilName.error = null
+//            }
+//
+//            override fun afterTextChanged(p0: Editable?) {
+//            }
+//        })
+        editName.addTextChangedListener {
+            tilName.error = null
         }
 
-//        viewModel.itemLiveData.value = ShopItem("hello", 332)
-//        (viewModel.itemLiveData as MutableLiveData<ShopItem>).value =  ShopItem("hello", 332)
+        editCount = findViewById(R.id.edit_text_count)
+        editCount.addTextChangedListener {
+            tilCount.error = null
+        }
 
-        parseIntent()
-
+        buttonSave = findViewById(R.id.buttonSave)
     }
 
     private fun lunchActivityForAdd(){
@@ -81,6 +94,33 @@ class ShopItemActivity : AppCompatActivity() {
             }
         } else {
             throw IllegalArgumentException("Mode is not defined")
+        }
+    }
+
+    private fun registerLiveData(){
+        viewModel.itemLiveData.observe(this){
+            editName.setText(it.name)
+            editCount.setText(it.count.toString())
+        }
+
+        viewModel.errorNameLD.observe(this){
+            tilName.error = if (it){
+                null
+            } else {
+                getString(R.string.name_error)
+            }
+        }
+        viewModel.errorCountLD.observe(this){
+            tilCount.error = if (it){
+                null
+            } else {
+                getString(R.string.count_error)
+            }
+        }
+
+        viewModel.finishActivityLD.observe(this){
+//            finish()
+            onBackPressed()
         }
     }
 

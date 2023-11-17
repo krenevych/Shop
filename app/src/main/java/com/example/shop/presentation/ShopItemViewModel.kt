@@ -27,12 +27,23 @@ class ShopItemViewModel: ViewModel() {
         _itemLiveData.value = shopItem
     }
 
+    private val _errorNameLD = MutableLiveData<Boolean>()
+    val errorNameLD: LiveData<Boolean>
+        get() = _errorNameLD
+
+    private val _errorCountLD = MutableLiveData<Boolean>()
+    val errorCountLD: LiveData<Boolean>
+        get() = _errorCountLD
+
+
     private fun validate(name: String, count: Int): Boolean {
         var res = true
         if (name == ""){
             res = false
+            _errorNameLD.value = false
         }
         if (count <= 0){
+            _errorCountLD.value = false
             res = false
         }
 
@@ -41,9 +52,15 @@ class ShopItemViewModel: ViewModel() {
 
     private fun parseInputName(inputName: Editable?) = inputName?.toString() ?: ""
 
-    private fun parseInputCount(inputCount: Editable?): Int {
-        return inputCount?.toString()?.toInt() ?: 0
+    private fun parseInputCount(inputCount: Editable?) = try {
+        inputCount?.toString()?.toInt() ?: 0
+    } catch (er: NumberFormatException){
+        0
     }
+
+    private val _finishActivityLD = MutableLiveData<Unit>()
+    val finishActivityLD: LiveData<Unit>
+        get() = _finishActivityLD
 
     fun editItem(inputName: Editable?, inputCount: Editable?){
         val item = _itemLiveData.value
@@ -55,6 +72,7 @@ class ShopItemViewModel: ViewModel() {
                 val shopItem = it.copy(name = name, count = count)
                 editShopItemUseCase.editShopItem(shopItem)
             }
+            _finishActivityLD.value = Unit
         }
 
     }
@@ -65,6 +83,7 @@ class ShopItemViewModel: ViewModel() {
         if (validate(name, count)) {
             val shopItem = ShopItem(name, count)
             addShopItemUseCase.addShopItem(shopItem)
+            _finishActivityLD.value = Unit
         }
     }
 
