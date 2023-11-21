@@ -53,10 +53,12 @@ class ShopItemFragment() : Fragment() {
                 mode = getString(EXTRA_MODE) ?: MODE_UNDEF
             } else throw IllegalArgumentException("Unknown type")
 
-            if (mode == MODE_EDIT && containsKey(EXTRA_ITEM_ID)) {
-                itemId = getLong(EXTRA_ITEM_ID)
-            } else {
-                throw IllegalArgumentException("Id for item is not defined")
+            if (mode == MODE_EDIT) {
+                if (containsKey(EXTRA_ITEM_ID)) {
+                    itemId = getLong(EXTRA_ITEM_ID)
+                } else {
+                    throw IllegalArgumentException("Id for item is not defined")
+                }
             }
         }
     }
