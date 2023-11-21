@@ -6,7 +6,7 @@ import android.util.Log
 import com.example.shop.R
 import com.example.shop.domain.ShopItem
 
-class ShopItemActivity : AppCompatActivity() {
+class ShopItemActivity : AppCompatActivity(), ShopItemFragment.FinishEditListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +44,9 @@ class ShopItemActivity : AppCompatActivity() {
         }
     }
 
+    override fun onFinishEdit() {
+        onBackPressed()
+    }
 
     companion object {
         const val TAG = "XXXXXX"

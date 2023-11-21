@@ -14,7 +14,7 @@ import com.example.shop.domain.ShopItem
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ShopItemFragment.FinishEditListener {
 
     private lateinit var viewModel: MainViewModel
 //    private lateinit var recyclerView: RecyclerView
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
             .commit()
     }
 
-    val isPortrait : Boolean
+    private val isPortrait : Boolean
         get() = binding.shopItemContainer  == null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -101,5 +101,9 @@ class MainActivity : AppCompatActivity() {
     companion object {
 
         val TAG = "XXXXXX"
+    }
+
+    override fun onFinishEdit() {
+        onBackPressed()
     }
 }

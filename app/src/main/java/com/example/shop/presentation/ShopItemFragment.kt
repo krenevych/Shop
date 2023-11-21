@@ -15,7 +15,7 @@ import com.example.shop.domain.ShopItem
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemFragment() : Fragment() {
+class ShopItemFragment : Fragment() {
 
     private lateinit var binding: FragmentShopItemBinding
 
@@ -46,6 +46,12 @@ class ShopItemFragment() : Fragment() {
         super.onCreate(savedInstanceState)
 
         Log.e(TAG, "onCreate", )
+
+
+        (activity as? FinishEditListener)?.let{
+            finishEditListener = it
+        } ?: throw IllegalArgumentException("Activity has to implement FinishEditListener")
+
 
         with(requireArguments()) {
             if (containsKey(EXTRA_MODE)) {
@@ -129,8 +135,14 @@ class ShopItemFragment() : Fragment() {
         }
 
         viewModel.finishActivityLD.observe(viewLifecycleOwner){
-            activity?.onBackPressed()  // FIXME:
+//            activity?.onBackPressed()  // FIXME:
+            finishEditListener?.onFinishEdit()
         }
+    }
+
+    var finishEditListener: FinishEditListener? = null
+    fun interface FinishEditListener {
+        fun onFinishEdit()
     }
 
     private val tilCount: TextInputLayout
