@@ -28,12 +28,12 @@ class ShopItemActivity : AppCompatActivity() {
             mode = intent.getStringExtra(EXTRA_MODE) ?: MODE_UNDEF
             Log.d(TAG, "parseIntent: mode = $mode")
             if (mode == MODE_ADD){
-                setupFragment(ShopItemFragment())
+                setupFragment(ShopItemFragment.newInstanceFragmentAdd())
             }
             else if (mode == MODE_EDIT && intent.hasExtra(EXTRA_ITEM_ID)){
                 itemId = intent.getLongExtra(EXTRA_ITEM_ID, ShopItem.UNDEFINED)
                 Log.d(TAG, "parseIntent: itemId = $itemId")
-                setupFragment(ShopItemFragment())
+                setupFragment(ShopItemFragment.newInstanceFragmentEdit(itemId))
             } else {
                 throw IllegalArgumentException("Item Id is not defined")
             }

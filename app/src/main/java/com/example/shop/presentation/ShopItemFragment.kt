@@ -13,7 +13,7 @@ import com.example.shop.domain.ShopItem
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class ShopItemFragment : Fragment() {
+class ShopItemFragment() : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -23,10 +23,16 @@ class ShopItemFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_shop_item, container, false)
     }
 
+    private var mode: String = MODE_UNDEF
+    private var itemId: Long = ShopItem.UNDEFINED
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
         initViews(view)
+        setupMode()
+        registerLiveData()
     }
 
     private lateinit var tilName: TextInputLayout
@@ -42,11 +48,25 @@ class ShopItemFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
+        with(requireArguments()) {
+            if (containsKey(EXTRA_MODE)) {
+                mode = getString(EXTRA_MODE) ?: MODE_UNDEF
+            } else throw IllegalArgumentException("Unknown type")
 
-//        parseIntent()
-        registerLiveData()
+            if (mode == MODE_EDIT && containsKey(EXTRA_ITEM_ID)) {
+                itemId = getLong(EXTRA_ITEM_ID)
+            } else {
+                throw IllegalArgumentException("Id for item is not defined")
+            }
+        }
+    }
 
+    private fun setupMode() {
+        when (mode) {
+            MODE_ADD -> setupAdd()
+            MODE_EDIT -> setupEdit()
+            else -> throw IllegalArgumentException("Unknown type")
+        }
     }
 
     private fun initViews(view: View) {
@@ -67,54 +87,33 @@ class ShopItemFragment : Fragment() {
         buttonSave = view.findViewById(R.id.buttonSave)
     }
 
-//    private fun lunchActivityForAdd(){
-//        buttonSave.setOnClickListener {
-//            viewModel.addItem(editName.text, editCount.text)
-//        }
-//    }
-//    private fun lunchActivityForEdit(){
-//        viewModel.getItem(itemId)
-//
-//        buttonSave.setOnClickListener {
-//            viewModel.editItem(editName.text, editCount.text)
-//        }
-//    }
+    private fun setupAdd(){
+        buttonSave.setOnClickListener {
+            viewModel.addItem(editName.text, editCount.text)
+        }
+    }
+    private fun setupEdit(){
+        viewModel.getItem(itemId)
 
-//    private var mode: String = MODE_UNDEF
-//    private var itemId: Long = ShopItem.UNDEFINED
-//    private fun parseIntent(){
-//        if (intent.hasExtra(EXTRA_MODE)){
-//            mode = intent.getStringExtra(EXTRA_MODE) ?: MODE_UNDEF
-//            Log.d(TAG, "parseIntent: mode = $mode")
-//            if (mode == MODE_ADD){
-//                lunchActivityForAdd()
-//            }
-//            else if (mode == MODE_EDIT && intent.hasExtra(EXTRA_ITEM_ID)){
-//                itemId = intent.getLongExtra(EXTRA_ITEM_ID, ShopItem.UNDEFINED)
-//                Log.d(TAG, "parseIntent: itemId = $itemId")
-//                lunchActivityForEdit()
-//            } else {
-//                throw IllegalArgumentException("Item Id is not defined")
-//            }
-//        } else {
-//            throw IllegalArgumentException("Mode is not defined")
-//        }
-//    }
+        buttonSave.setOnClickListener {
+            viewModel.editItem(editName.text, editCount.text)
+        }
+    }
 
     private fun registerLiveData(){
-        viewModel.itemLiveData.observe(this){
+        viewModel.itemLiveData.observe(viewLifecycleOwner){
             editName.setText(it.name)
             editCount.setText(it.count.toString())
         }
 
-        viewModel.errorNameLD.observe(this){
+        viewModel.errorNameLD.observe(viewLifecycleOwner){
             tilName.error = if (it){
                 null
             } else {
                 getString(R.string.name_error)
             }
         }
-        viewModel.errorCountLD.observe(this){
+        viewModel.errorCountLD.observe(viewLifecycleOwner){
             tilCount.error = if (it){
                 null
             } else {
@@ -122,10 +121,25 @@ class ShopItemFragment : Fragment() {
             }
         }
 
-        viewModel.finishActivityLD.observe(this){
-//            finish()
-//            onBackPressed()
+        viewModel.finishActivityLD.observe(viewLifecycleOwner){
+            activity?.onBackPressed()  // FIXME:
         }
+    }
+
+    companion object {
+
+        fun newInstanceFragmentAdd() = ShopItemFragment().apply {
+            arguments = Bundle().apply {
+                putString(EXTRA_MODE, MODE_ADD)
+            }
+        }
+        fun newInstanceFragmentEdit(id: Long)= ShopItemFragment().apply {
+            arguments = Bundle().apply {
+                putString(EXTRA_MODE, MODE_EDIT)
+                putLong(EXTRA_ITEM_ID, id)
+            }
+        }
+
     }
 
 }
