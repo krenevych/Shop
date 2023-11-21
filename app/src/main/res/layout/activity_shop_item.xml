@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.fragment.app.FragmentContainerView
+    android:id="@+id/shop_item_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:name="com.example.shop.presentation.ShopItemFragment"
-    tools:context=".presentation.ShopItemActivity">
+    tools:context=".presentation.ShopItemActivity"
+    tools:layout="@layout/fragment_shop_item"
+    >
 
 
 </androidx.fragment.app.FragmentContainerView>
