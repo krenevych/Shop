@@ -11,13 +11,15 @@ class ShopItemActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_item)
-        parseIntent()
+        if (savedInstanceState == null)
+            parseIntent()
     }
 
     private fun setupFragment(fragment: ShopItemFragment){
         supportFragmentManager
             .beginTransaction()
-            .add(R.id.shop_item_container, fragment)
+//            .add(R.id.shop_item_container, fragment)
+            .replace(R.id.shop_item_container, fragment)
             .commit()
     }
 
