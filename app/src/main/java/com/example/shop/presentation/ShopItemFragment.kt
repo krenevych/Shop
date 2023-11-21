@@ -10,18 +10,22 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.shop.R
+import com.example.shop.databinding.FragmentShopItemBinding
 import com.example.shop.domain.ShopItem
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class ShopItemFragment() : Fragment() {
 
+    private lateinit var binding: FragmentShopItemBinding
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_shop_item, container, false)
+    ): View {
+        binding = FragmentShopItemBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     private var mode: String = MODE_UNDEF
@@ -31,18 +35,10 @@ class ShopItemFragment() : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel = ViewModelProvider(this)[ShopItemViewModel::class.java]
-        initViews(view)
+        initViews()
         setupMode()
         registerLiveData()
     }
-
-    private lateinit var tilName: TextInputLayout
-    private lateinit var tilCount: TextInputLayout
-
-    private lateinit var editName: TextInputEditText
-    private lateinit var editCount: TextInputEditText
-
-    private lateinit var buttonSave: Button
 
     private lateinit var viewModel: ShopItemViewModel
 
@@ -74,45 +70,51 @@ class ShopItemFragment() : Fragment() {
         }
     }
 
-    private fun initViews(view: View) {
-        tilName = view.findViewById(R.id.til_name)
-        tilCount = view.findViewById(R.id.til_count)
+    private fun initViews() {
 
-        editName = view.findViewById(R.id.edit_text_name)
 
-        editName.addTextChangedListener {
-            tilName.error = null
+        with(binding){
+            editTextName.addTextChangedListener {
+                tilName.error = null
+            }
+
+            editTextCount.addTextChangedListener {
+                tilCount.error = null
+            }
         }
 
-        editCount = view.findViewById(R.id.edit_text_count)
-        editCount.addTextChangedListener {
-            tilCount.error = null
-        }
 
-        buttonSave = view.findViewById(R.id.buttonSave)
     }
 
     private fun setupAdd(){
-        buttonSave.setOnClickListener {
-            viewModel.addItem(editName.text, editCount.text)
+        with(binding){
+            buttonSave.setOnClickListener {
+                viewModel.addItem(editTextName.text, editTextCount.text)
+            }
         }
+
     }
     private fun setupEdit(){
         viewModel.getItem(itemId)
 
-        buttonSave.setOnClickListener {
-            viewModel.editItem(editName.text, editCount.text)
+        with(binding) {
+            buttonSave.setOnClickListener {
+                viewModel.editItem(editTextName.text, editTextCount.text)
+            }
         }
     }
 
     private fun registerLiveData(){
         viewModel.itemLiveData.observe(viewLifecycleOwner){
-            editName.setText(it.name)
-            editCount.setText(it.count.toString())
+            with(binding) {
+                editTextName.setText(it.name)
+                editTextCount.setText(it.count.toString())
+            }
+
         }
 
         viewModel.errorNameLD.observe(viewLifecycleOwner){
-            tilName.error = if (it){
+            binding.tilName.error = if (it){
                 null
             } else {
                 getString(R.string.name_error)
@@ -130,6 +132,9 @@ class ShopItemFragment() : Fragment() {
             activity?.onBackPressed()  // FIXME:
         }
     }
+
+    private val tilCount: TextInputLayout
+        get() = binding.tilCount
 
     companion object {
 
