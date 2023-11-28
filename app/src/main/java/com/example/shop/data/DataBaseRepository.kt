@@ -23,15 +23,12 @@ class DataBaseRepository(context: Context): ShopItemRepository {
     }
 
     override fun getItems(): LiveData<List<ShopItem>> {
-        val entities = dao.getItems()
-//        Transformations.map(dao.getItems()) {
-//            ShopItemMapper.entitiesToShooItem(it)
-//        }
-        val liveData = MediatorLiveData<List<ShopItem>>()
-        liveData.addSource(entities) {
-            ShopItemMapper.entitiesToShooItem(it)
+
+        return MediatorLiveData<List<ShopItem>>().apply {
+            addSource(dao.getItems()){
+                value = ShopItemMapper.entitiesToShooItem(it)
+            }
         }
-        return liveData
     }
 
     override fun removeShopItem(item: ShopItem) {

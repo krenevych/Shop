@@ -1,18 +1,20 @@
 package com.example.shop.presentation
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.example.shop.data.ShopItemRepositoryImpl
+import com.example.shop.data.DataBaseRepository
 import com.example.shop.domain.ShopItem
 import com.example.shop.domain.usecase.EditShopItem
 import com.example.shop.domain.usecase.GetShopItemList
 import com.example.shop.domain.usecase.RemoveShopItem
 
-class MainViewModel: ViewModel() {
+class MainViewModel(application: Application): AndroidViewModel(application) {
 
-    private val repository = ShopItemRepositoryImpl   // FIXME: це на зараз!!! Це не правильно з точки зору чистої архітектури,
-    // FIXME: бо presentation модуль стає залежним від data модуля
+//    private val repository = ShopItemRepositoryImpl   // FIXME: це на зараз!!! Це не правильно з точки зору чистої архітектури,
+//    // FIXME: бо presentation модуль стає залежним від data модуля
+
+    private val repository = DataBaseRepository(application)
 
     private val getShopItemListUseCase = GetShopItemList(repository)
     private val editShopItemUseCase = EditShopItem(repository)
@@ -21,9 +23,6 @@ class MainViewModel: ViewModel() {
     val liveData: LiveData<List<ShopItem>>
         get() = getShopItemListUseCase.getItems()
 
-    fun getShopItemList() {
-        getShopItemListUseCase.getItems()
-    }
 
     fun toggleItemActivity(item: ShopItem) {
         val newItem = item.copy(active = !item.active)

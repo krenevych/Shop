@@ -1,18 +1,23 @@
 package com.example.shop.presentation
 
+import android.app.Application
 import android.text.Editable
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.shop.data.DataBaseRepository
 import com.example.shop.data.ShopItemRepositoryImpl
 import com.example.shop.domain.ShopItem
 import com.example.shop.domain.usecase.AddShopItem
 import com.example.shop.domain.usecase.EditShopItem
 import com.example.shop.domain.usecase.GetShopItem
 
-class ShopItemViewModel: ViewModel() {
-    private val repository = ShopItemRepositoryImpl   // FIXME: це на зараз!!! Це не правильно з точки зору чистої архітектури,
-    // FIXME: бо presentation модуль стає залежним від data модуля
+class ShopItemViewModel(application: Application): AndroidViewModel(application) {
+//    private val repository = ShopItemRepositoryImpl   // FIXME: це на зараз!!! Це не правильно з точки зору чистої архітектури,
+//    // FIXME: бо presentation модуль стає залежним від data модуля
+
+    private val repository = DataBaseRepository(application)
 
     private val editShopItemUseCase = EditShopItem(repository)
     private val addShopItemUseCase = AddShopItem(repository)

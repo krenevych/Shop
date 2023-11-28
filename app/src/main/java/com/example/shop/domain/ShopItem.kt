@@ -8,6 +8,6 @@ data class ShopItem(
 )
 {
     companion object {
-        const val UNDEFINED = -1L
+        const val UNDEFINED = 0L
     }
 }

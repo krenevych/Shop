@@ -9,7 +9,7 @@ import com.example.shop.domain.ShopItem
 data class ShopItemEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id_item")
-    var id: Long = ShopItem.UNDEFINED,
+    val id: Long,
 
     @ColumnInfo(name = "name_item")
     val name: String,
