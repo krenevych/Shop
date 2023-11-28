@@ -6,7 +6,7 @@ import com.example.shop.domain.ShopItem
 class AddShopItem(
     private val repository: ShopItemRepository
 ) {
-    fun addShopItem(item: ShopItem){
+    suspend fun addShopItem(item: ShopItem){
         repository.addShopItem(item)
     }
 }

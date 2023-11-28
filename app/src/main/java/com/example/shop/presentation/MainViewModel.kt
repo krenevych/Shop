@@ -3,11 +3,13 @@ package com.example.shop.presentation
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.viewModelScope
 import com.example.shop.data.DataBaseRepository
 import com.example.shop.domain.ShopItem
 import com.example.shop.domain.usecase.EditShopItem
 import com.example.shop.domain.usecase.GetShopItemList
 import com.example.shop.domain.usecase.RemoveShopItem
+import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
 
@@ -25,11 +27,15 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
 
     fun toggleItemActivity(item: ShopItem) {
-        val newItem = item.copy(active = !item.active)
-        editShopItemUseCase.editShopItem(newItem)
+        viewModelScope.launch {
+            val newItem = item.copy(active = !item.active)
+            editShopItemUseCase.editShopItem(newItem)
+        }
     }
     fun removeShopItem(item: ShopItem) {
-        removeShopItemUseCase.removeShopItem(item)
+        viewModelScope.launch {
+            removeShopItemUseCase.removeShopItem(item)
+        }
     }
 
 }

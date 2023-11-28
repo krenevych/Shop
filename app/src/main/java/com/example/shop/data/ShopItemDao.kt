@@ -11,17 +11,17 @@ import androidx.room.Update
 @Dao
 interface ShopItemDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun addShopItem(item: ShopItemEntity)
+    suspend fun addShopItem(item: ShopItemEntity)
     @Update
-    fun editShopItem(item: ShopItemEntity)
+    suspend fun editShopItem(item: ShopItemEntity)
 
     @Query("SELECT * FROM item_table WHERE id_item==:id LIMIT 1")
-    fun getItem(id: Long) : ShopItemEntity
+    suspend fun getItem(id: Long) : ShopItemEntity
 
     @Query("SELECT * FROM item_table ORDER BY id_item ASC")
     fun getItems() : LiveData<List<ShopItemEntity>>
 
     @Delete
-    fun removeShopItem(item: ShopItemEntity)
+    suspend fun removeShopItem(item: ShopItemEntity)
 
 }

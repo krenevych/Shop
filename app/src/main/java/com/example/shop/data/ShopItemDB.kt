@@ -28,7 +28,7 @@ abstract class ShopItemDB : RoomDatabase() {
                     ShopItemDB::class.java,
                     "word_database"
                 )
-                    .allowMainThreadQueries()
+//                    .allowMainThreadQueries()
                     .build()
                 INSTANCE = instance
                 // return instance
