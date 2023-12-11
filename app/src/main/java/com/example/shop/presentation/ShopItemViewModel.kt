@@ -93,7 +93,7 @@ class ShopItemViewModel(application: Application): AndroidViewModel(application)
         if (validate(name, count)) {
             viewModelScope.launch {
                 val shopItem = ShopItem(name, count)
-                addShopItemUseCase.addShopItem(shopItem)
+                addShopItemUseCase(shopItem)
                 _finishActivityLD.value = Unit
             }
         }
